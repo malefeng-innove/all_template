@@ -6,10 +6,10 @@
   <mva:VisualBasic.Settings>
     <x:Null />
   </mva:VisualBasic.Settings>
-  <sap:VirtualizedContainerService.HintSize>777,678</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>777,713</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>Log_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
-    <scg:List x:TypeArguments="x:String" Capacity="42">
+    <scg:List x:TypeArguments="x:String" Capacity="22">
       <x:String>System.Activities</x:String>
       <x:String>System.Activities.Statements</x:String>
       <x:String>System.Activities.Expressions</x:String>
@@ -61,22 +61,31 @@
       <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
     </scg:List>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Log" sap:VirtualizedContainerService.HintSize="526,547" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence DisplayName="Log" sap:VirtualizedContainerService.HintSize="526,648" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
       <Variable x:TypeArguments="x:String" Name="logFilePath" />
       <Variable x:TypeArguments="x:Boolean" Name="ifFileExist" />
+      <Variable x:TypeArguments="x:String" Name="monthFolderPath" />
     </Sequence.Variables>
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
+    <Assign DisplayName="月份文件夹路径" sap:VirtualizedContainerService.HintSize="484,61" sap2010:WorkflowViewState.IdRef="Assign_2">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[monthFolderPath]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[logFolderPath + "\" + Now.ToString("yyyy") + "\" + Now.ToString("MM")]</InArgument>
+      </Assign.Value>
+    </Assign>
     <Assign DisplayName="组合日志文件名" sap:VirtualizedContainerService.HintSize="484,61" sap2010:WorkflowViewState.IdRef="Assign_1">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[logFilePath]</OutArgument>
       </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="x:String">[logFolderPath + "\" + Now.ToString("yyyy") + "-" + Now.ToString("MM") + "-" + Now.ToString("dd") + ".txt"]</InArgument>
+        <InArgument x:TypeArguments="x:String">[monthFolderPath + "\" + Now.ToString("yyyy") + "-" + Now.ToString("MM") + "-" + Now.ToString("dd") + ".txt"]</InArgument>
       </Assign.Value>
     </Assign>
     <ui:PathExists DisplayName="该日志文件是否已经存在" Exists="[ifFileExist]" sap:VirtualizedContainerService.HintSize="484,91" sap2010:WorkflowViewState.IdRef="PathExists_2" Path="[logFilePath]" PathType="File" />
@@ -105,7 +114,7 @@
               <x:Boolean x:Key="IsPinned">False</x:Boolean>
             </scg:Dictionary>
           </sap:WorkflowViewStateService.ViewState>
-          <ui:CreateFile ContinueOnError="{x:Null}" DisplayName="创建该日志文件" sap:VirtualizedContainerService.HintSize="334,136" sap2010:WorkflowViewState.IdRef="CreateFile_2" Name="[Now.ToString(&quot;yyyy&quot;) + &quot;-&quot; + Now.ToString(&quot;MM&quot;) + &quot;-&quot; + Now.ToString(&quot;dd&quot;) + &quot;.txt&quot;]" Path="[logFolderPath]" />
+          <ui:CreateFile ContinueOnError="{x:Null}" DisplayName="创建该日志文件" sap:VirtualizedContainerService.HintSize="334,136" sap2010:WorkflowViewState.IdRef="CreateFile_2" Name="[Now.ToString(&quot;yyyy&quot;) + &quot;-&quot; + Now.ToString(&quot;MM&quot;) + &quot;-&quot; + Now.ToString(&quot;dd&quot;) + &quot;.txt&quot;]" Path="[monthFolderPath]" />
           <ui:AppendLine DisplayName="Append Line" FileName="[logFilePath]" sap:VirtualizedContainerService.HintSize="334,136" sap2010:WorkflowViewState.IdRef="AppendLine_1" Text="[Now.ToString(&quot;HH:mm:ss&quot;) + &quot; &quot; + logMsg]" UseDefaultEncoding="False" />
         </Sequence>
       </If.Else>

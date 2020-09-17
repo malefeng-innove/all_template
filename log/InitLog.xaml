@@ -5,10 +5,10 @@
   <mva:VisualBasic.Settings>
     <x:Null />
   </mva:VisualBasic.Settings>
-  <sap:VirtualizedContainerService.HintSize>777,647</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>777,1315</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>InitLog_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
-    <scg:List x:TypeArguments="x:String" Capacity="42">
+    <scg:List x:TypeArguments="x:String" Capacity="22">
       <x:String>System.Activities</x:String>
       <x:String>System.Activities.Statements</x:String>
       <x:String>System.Activities.Expressions</x:String>
@@ -60,17 +60,40 @@
       <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
     </scg:List>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="初始化日志文件" sap:VirtualizedContainerService.HintSize="305,339" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence DisplayName="初始化日志文件" sap:VirtualizedContainerService.HintSize="526,1250" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
       <Variable x:TypeArguments="x:String" Name="fileName" />
       <Variable x:TypeArguments="x:Boolean" Name="ifFileExist" />
+      <Variable x:TypeArguments="x:Boolean" Name="ifYearFolderExist" />
+      <Variable x:TypeArguments="x:Boolean" Name="ifMonthFolderExist" />
+      <Variable x:TypeArguments="x:String" Name="monthFolder" />
     </Sequence.Variables>
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <Assign DisplayName="生成日志文件名" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_1">
+    <ui:PathExists DisplayName="判断年份文件夹是否存在" Exists="[ifYearFolderExist]" sap:VirtualizedContainerService.HintSize="484,91" sap2010:WorkflowViewState.IdRef="PathExists_2" Path="[logFolderPath + &quot;\&quot; + Now.ToString(&quot;yyyy&quot;)]" PathType="Folder" />
+    <If Condition="[ifYearFolderExist]" DisplayName="创建年份文件夹" sap:VirtualizedContainerService.HintSize="484,234" sap2010:WorkflowViewState.IdRef="If_2">
+      <If.Else>
+        <ui:CreateDirectory ContinueOnError="{x:Null}" DisplayName="创建年份文件夹" sap:VirtualizedContainerService.HintSize="334,81" sap2010:WorkflowViewState.IdRef="CreateDirectory_1" Path="[logFolderPath + &quot;\&quot; + Now.ToString(&quot;yyyy&quot;)]" />
+      </If.Else>
+    </If>
+    <Assign DisplayName="月份文件夹路径" sap:VirtualizedContainerService.HintSize="484,61" sap2010:WorkflowViewState.IdRef="Assign_2">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[monthFolder]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[logFolderPath + "\" + Now.ToString("yyyy") + "\" + Now.ToString("MM")]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <ui:PathExists DisplayName="判断月份文件夹是否存在" Exists="[ifMonthFolderExist]" sap:VirtualizedContainerService.HintSize="484,91" sap2010:WorkflowViewState.IdRef="PathExists_3" Path="[monthFolder]" PathType="Folder" />
+    <If Condition="[ifMonthFolderExist]" DisplayName="创建月份文件夹" sap:VirtualizedContainerService.HintSize="484,234" sap2010:WorkflowViewState.IdRef="If_3">
+      <If.Else>
+        <ui:CreateDirectory ContinueOnError="{x:Null}" DisplayName="创建月份文件夹" sap:VirtualizedContainerService.HintSize="334,81" sap2010:WorkflowViewState.IdRef="CreateDirectory_2" Path="[monthFolder]" />
+      </If.Else>
+    </If>
+    <Assign DisplayName="生成日志文件名" sap:VirtualizedContainerService.HintSize="484,61" sap2010:WorkflowViewState.IdRef="Assign_1">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[fileName]</OutArgument>
       </Assign.To>
@@ -78,7 +101,7 @@
         <InArgument x:TypeArguments="x:String">[Now.ToString("yyyy") + "-" + Now.ToString("MM") + "-" + Now.ToString("dd") + ".txt"]</InArgument>
       </Assign.Value>
     </Assign>
-    <ui:PathExists DisplayName="该日志文件是否已经存在" Exists="[ifFileExist]" sap:VirtualizedContainerService.HintSize="263,53" sap2010:WorkflowViewState.IdRef="PathExists_1" Path="[logFolderPath + &quot;\&quot; + fileName]" PathType="File">
+    <ui:PathExists DisplayName="该日志文件是否已经存在" Exists="[ifFileExist]" sap:VirtualizedContainerService.HintSize="484,53" sap2010:WorkflowViewState.IdRef="PathExists_1" Path="[monthFolder + fileName]" PathType="File">
       <sap:WorkflowViewStateService.ViewState>
         <scg:Dictionary x:TypeArguments="x:String, x:Object">
           <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -86,7 +109,7 @@
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
     </ui:PathExists>
-    <If Condition="[ifFileExist]" DisplayName="创建日志文件" sap:VirtualizedContainerService.HintSize="263,53" sap2010:WorkflowViewState.IdRef="If_1">
+    <If Condition="[ifFileExist]" DisplayName="创建日志文件" sap:VirtualizedContainerService.HintSize="484,213" sap2010:WorkflowViewState.IdRef="If_1">
       <sap:WorkflowViewStateService.ViewState>
         <scg:Dictionary x:TypeArguments="x:String, x:Object">
           <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -94,7 +117,7 @@
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
       <If.Else>
-        <ui:CreateFile ContinueOnError="{x:Null}" DisplayName="创建该日志文件" sap:VirtualizedContainerService.HintSize="200,53" sap2010:WorkflowViewState.IdRef="CreateFile_1" Name="[fileName]" Path="[logFolderPath]">
+        <ui:CreateFile ContinueOnError="{x:Null}" DisplayName="创建该日志文件" sap:VirtualizedContainerService.HintSize="334,136" sap2010:WorkflowViewState.IdRef="CreateFile_1" Name="[fileName]" Path="[monthFolder]">
           <sap:WorkflowViewStateService.ViewState>
             <scg:Dictionary x:TypeArguments="x:String, x:Object">
               <x:Boolean x:Key="IsExpanded">False</x:Boolean>
